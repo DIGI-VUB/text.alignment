@@ -1,0 +1,84 @@
+---
+title: "Text Alignment"
+author: "Jan Wijffels"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_caption: false
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Text Alignment with Smith-Waterman}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include=FALSE, cache=FALSE}
+options(width = 1000)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, comment = NA, eval = TRUE)
+```
+
+## Smith Waterman
+
+Smith-Waterman is an algorithm to identify similaries between sequences. This package implements the algorithm for sequences of letters and words and is usefull for text analytics researchers.
+The algorithm is explained in detail at https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm
+
+- The package uses similar code as the textreuse::local_align function and also allows to align character sequences next to aligning word sequences
+
+## Example usage
+
+The package was set up in order to easily
+
+- Find names in documents even if they are not correctly spelled
+- Match 2 texts
+- Find relevant sequences of texts in other texts
+
+We show some examples of these use cases below.
+
+```{r}
+library(text.alignment)
+```
+
+### Example matching 2 names 
+
+```{r}
+a <- "Gaspard	Tournelly cardeur à laine"
+b <- "Gaspard	Bourelly cordonnier"
+smith_waterman(a, b)
+
+a <- "Gaspard	T.	cardeur à laine"
+b <- "Gaspard	Tournelly cardeur à laine"
+smith_waterman(a, b, type = "characters")
+```
+
+### Example matching 2 translations
+
+```{r}
+a <- system.file(package = "text.alignment", "extdata", "example1.txt")
+a <- readLines(a)
+a <- paste(a, collapse = "\n")
+b <- system.file(package = "text.alignment", "extdata", "example2.txt")
+b <- readLines(b)
+b <- paste(b, collapse = "\n")
+cat(a, sep = "\n")
+cat(b, sep = "\n")
+```
+
+```{r}
+smith_waterman(a, b, type = "words")
+```
+
+### Find relevant sequences of texts in other texts
+
+```{r}
+x <- smith_waterman("Lange rei", b)
+x$b$tokens[x$b$alignment$from:x$b$alignment$to]
+overview <- as.data.frame(x)
+overview$b_from
+overview$b_to
+substr(overview$b, overview$b_from, overview$b_to)
+```
