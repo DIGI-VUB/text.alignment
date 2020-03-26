@@ -83,3 +83,11 @@ overview$b_from
 overview$b_to
 substr(overview$b, overview$b_from, overview$b_to)
 ```
+
+### Get alignment overview as a data.frame
+
+```{r}
+x <- smith_waterman(a, b)
+x <- as.data.frame(x)
+str(x)
+```
