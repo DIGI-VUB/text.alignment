@@ -24,8 +24,9 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, comment = NA, eval = TRUE)
 
 ## Smith Waterman
 
-Smith-Waterman is an algorithm to identify similaries between sequences. This package implements the algorithm for sequences of letters and words and is usefull for text analytics researchers.
-The algorithm is explained in detail at https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm
+Smith-Waterman is an algorithm to identify similaries between sequences. The algorithm is explained in detail at https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm and finds a local optimal alignment between 2 sequences of letters.
+
+This package implements the algorithm for sequences of letters as well as sequences of words and is usefull for text analytics researchers.
 
 - The package uses similar code as the textreuse::local_align function and also allows to align character sequences next to aligning word sequences
 

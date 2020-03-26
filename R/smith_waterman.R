@@ -68,6 +68,10 @@ tokenize_spaces_punct <- function(x){
 #' \itemize{
 #'  \item{type: }{The alignment \code{type}}
 #'  \item{sw: }{The Smith-Waterman local alignment score}
+#'  \item{similarity: }{Score between 0 and 1, calculated as the Smith-Waterman local alignment score / (the number of letters/words in the shortest text times the match weight)}
+#'  \item{weights: }{The list of weights provided to the function: match, mismatch and gap}
+#'  \item{matches: }{The number of matches found during alignment}
+#'  \item{mismatches: }{The number of mismatches found during alignment}
 #'  \item{a: }{A list with alignment information from the text provided in \code{a}. The list elements documented below}
 #'  \item{b: }{A list with alignment information from the text provided in \code{b}. The list elements documented below}
 #' }
@@ -81,6 +85,7 @@ tokenize_spaces_punct <- function(x){
 #'    \item{text: }{The aligned text from either a or b where gaps/mismatches are filled up with the \code{edit_mark} symbol}
 #'    \item{tokens: }{The character vector of tokens which form the aligned \code{text}}
 #'    \item{n: }{The length of the aligned \code{text}}
+#'    \item{gaps: }{The number of gaps during alignment}
 #'    \item{from: }{The starting position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.}
 #'    \item{to: }{The end position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.}
 #'   } 
@@ -188,13 +193,18 @@ smith_waterman <- function(a, b,
   
   if(row_i == 1 || col_i == 1){
     alignment <- list(type = type, 
+                      weights = list(match = match, mismatch = mismatch, gap = gap),
                       sw = 0,
+                      similarity = 0,
+                      matches = 0L,
+                      mismatches = 0L,
                       a = list(text = a,
                                tokens = original_a,
                                n = length(standardised_a),
                                alignment = list(text = character(),
                                                 tokens = character(),
                                                 n = 0L,
+                                                gaps = 0L,
                                                 from = integer(),
                                                 to = integer())),
                       b = list(text = b,
@@ -203,6 +213,7 @@ smith_waterman <- function(a, b,
                                alignment = list(text = character(),
                                                 tokens = character(),
                                                 n = 0L,
+                                                gaps = 0L,
                                                 from = integer(),
                                                 to = integer())))
     class(alignment) <- c("smith_waterman")
@@ -226,16 +237,22 @@ smith_waterman <- function(a, b,
                            edit_mark = edit_mark)
   }
   
-  
+  # similarity: alignment score / score in case of perfect match (note does not work when user provides his own similarity function)
+  similarity <- alignment_score / (min(length(standardised_a), length(standardised_b)) * match)
   # Construct the output structure
   alignment <- list(type = type, 
+                    weights = list(match = match, mismatch = mismatch, gap = gap),
                     sw = alignment_score,
+                    similarity = similarity,
+                    matches = path$matches,
+                    mismatches = path$mismatches,
                     a = list(text = a,
                              tokens = original_a,
                              n = length(standardised_a),
                              alignment = list(text = paste(path$a$sequence, collapse = collapse),
                                               tokens = path$a$sequence,
                                               n = length(path$a$sequence),
+                                              gaps = path$a$gaps,
                                               from = path$a$from,
                                               to = path$a$to)),
                     b = list(text = b,
@@ -244,6 +261,7 @@ smith_waterman <- function(a, b,
                              alignment = list(text = paste(path$b$sequence, collapse = collapse),
                                               tokens = path$b$sequence,
                                               n = length(path$b$sequence),
+                                              gaps = path$b$gaps,
                                               from = path$b$from,
                                               to = path$b$to)))
   class(alignment) <- c("smith_waterman")
@@ -267,6 +285,11 @@ alignment_path <- function(m, original_a, original_b, row_i, col_i, max_match, e
   which_end_b <- row_i - 1
   which_end_a <- col_i - 1
   
+  matches <- 1L
+  gaps_a <- 0L
+  gaps_b <- 0L
+  mismatches <- 0L
+  
   # Begin moving up, left, or diagonally within the matrix till we hit a zero
   while (m[row_i - 1, col_i - 1] != 0) {
     
@@ -288,11 +311,13 @@ alignment_path <- function(m, original_a, original_b, row_i, col_i, max_match, e
     # a and b, so we use the row and column indices - 1. The column corresponds
     # to `a` and the rows correspond to `b`.
     if (up == max_cell) {
+      gaps_a <- gaps_a + 1L
       row_i <- row_i - 1
       bword <- original_b[row_i - 1]
       b_out[out_i] <- bword
       a_out[out_i] <- mark_chars(bword, edit_mark)
     } else if (left == max_cell) {
+      gaps_b <- gaps_b + 1L
       col_i <- col_i - 1
       aword <- original_a[col_i - 1]
       b_out[out_i] <- mark_chars(aword, edit_mark)
@@ -306,9 +331,11 @@ alignment_path <- function(m, original_a, original_b, row_i, col_i, max_match, e
       # deletion we might have a substitution. If that is the case,
       # then treat it like a double insertion and deletion.
       if (tolower(aword) == tolower(bword)) {
+        matches <- matches + 1L
         b_out[out_i] <- bword
         a_out[out_i] <- aword
       } else {
+        mismatches <- mismatches + 1L
         b_out[out_i] <- bword
         a_out[out_i] <- mark_chars(bword, edit_mark)
         out_i <- out_i + 1
@@ -330,8 +357,10 @@ alignment_path <- function(m, original_a, original_b, row_i, col_i, max_match, e
   # We went backwards so revert it
   b_out <- rev(b_out[!is.na(b_out)])
   a_out <- rev(a_out[!is.na(a_out)])
-  list(a = list(sequence = a_out, from = which_start_a, to = which_end_a),
-       b = list(sequence = b_out, from = which_start_b, to = which_end_b))
+  list(matches = matches,
+       mismatches = mismatches, 
+       a = list(sequence = a_out, from = which_start_a, to = which_end_a, gaps = gaps_a),
+       b = list(sequence = b_out, from = which_start_b, to = which_end_b, gaps = gaps_b))
 }
 
 #' @export
@@ -373,12 +402,18 @@ as.data.frame.smith_waterman <- function(x, ...){
     b_to <- NA_integer_
     b_fromto <- NA
   }
-  data.frame(a = x$a$text, b = x$b$text, sw = x$sw, 
+  data.frame(a = x$a$text, b = x$b$text, 
+             sw = x$sw, 
+             similarity = x$similarity,
+             matches = x$matches,
+             mismatches = x$mismatches,
              a_aligned = a_aligned, 
+             a_gaps = x$a$alignment$gaps,
              a_from = a_from,
              a_to = a_to,
              a_fromto = I(a_fromto),
              b_aligned = b_aligned, 
+             b_gaps = x$b$alignment$gaps,
              b_from = b_from,
              b_to = b_to, 
              b_fromto = I(b_fromto), stringsAsFactors = FALSE)

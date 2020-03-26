@@ -107,6 +107,10 @@ Rcpp::List smith_waterman_path(
   row_i = row_i - 1;
   col_i = col_i - 1;
   
+  int matches = 1;
+  int mismatches = 0;
+  int gaps_a = 0;
+  int gaps_b = 0;
   int which_start_a = 0;
   int which_start_b = 0;
   int which_end_a;
@@ -127,11 +131,13 @@ Rcpp::List smith_waterman_path(
     double diagn    = m(row_i - 1, col_i - 1);
     
     if ((up >= left) && (up >= diagn)) {
+      gaps_a = gaps_a + 1;
       row_i = row_i - 1;
       std::string bword = Rcpp::as<std::string>(original_b[row_i - 1]);
       b_out.push_back(bword);
       a_out.push_back(smith_waterman_mark_chars(bword, edit_mark));
     } else if (left >= diagn) {
+      gaps_b = gaps_b + 1;
       col_i = col_i - 1;
       std::string aword = Rcpp::as<std::string>(original_a[col_i - 1]);
       b_out.push_back(smith_waterman_mark_chars(aword, edit_mark));
@@ -145,9 +151,11 @@ Rcpp::List smith_waterman_path(
       // deletion we might have a substitution. If that is the case,
       // then treat it like a double insertion and deletion.
       if (lowercase(aword) == lowercase(bword)) {
+        matches = matches + 1L;
         b_out.push_back(bword);
         a_out.push_back(aword);
       } else {
+        mismatches = mismatches + 1L;
         b_out.push_back(bword);
         a_out.push_back(smith_waterman_mark_chars(bword, edit_mark));
         b_out.push_back(smith_waterman_mark_chars(aword, edit_mark));
@@ -164,14 +172,18 @@ Rcpp::List smith_waterman_path(
   std::reverse(std::begin(b_out), std::end(b_out));
 
   Rcpp::List output = Rcpp::List::create(
+    Rcpp::Named("matches") = matches,
+    Rcpp::Named("mismatches") = mismatches,
     Rcpp::Named("a") = Rcpp::List::create(
       Rcpp::Named("sequence") = a_out, 
       Rcpp::Named("from") = which_start_a + 1,
-      Rcpp::Named("to") = which_end_a + 1),
+      Rcpp::Named("to") = which_end_a + 1,
+      Rcpp::Named("gaps") = gaps_a),
     Rcpp::Named("b") = Rcpp::List::create(
-        Rcpp::Named("sequence") = b_out, 
-        Rcpp::Named("from") = which_start_b + 1,
-        Rcpp::Named("to") = which_end_b + 1));
+      Rcpp::Named("sequence") = b_out, 
+      Rcpp::Named("from") = which_start_b + 1,
+      Rcpp::Named("to") = which_end_b + 1,
+      Rcpp::Named("gaps") = gaps_b));
   return output;
 }
 
@@ -189,6 +201,10 @@ Rcpp::List smith_waterman_path_integer(
   row_i = row_i - 1;
   col_i = col_i - 1;
   
+  int matches = 1;
+  int mismatches = 0;
+  int gaps_a = 0;
+  int gaps_b = 0;
   int which_start_a = 0;
   int which_start_b = 0;
   int which_end_a;
@@ -209,11 +225,13 @@ Rcpp::List smith_waterman_path_integer(
     double diagn    = m(row_i - 1, col_i - 1);
     
     if ((up >= left) && (up >= diagn)) {
+      gaps_a = gaps_a + 1;
       row_i = row_i - 1;
       std::string bword = Rcpp::as<std::string>(original_b[row_i - 1]);
       b_out.push_back(bword);
       a_out.push_back(smith_waterman_mark_chars(bword, edit_mark));
     } else if (left >= diagn) {
+      gaps_b = gaps_b + 1;
       col_i = col_i - 1;
       std::string aword = Rcpp::as<std::string>(original_a[col_i - 1]);
       b_out.push_back(smith_waterman_mark_chars(aword, edit_mark));
@@ -227,9 +245,11 @@ Rcpp::List smith_waterman_path_integer(
       // deletion we might have a substitution. If that is the case,
       // then treat it like a double insertion and deletion.
       if (lowercase(aword) == lowercase(bword)) {
+        matches = matches + 1L;
         b_out.push_back(bword);
         a_out.push_back(aword);
       } else {
+        mismatches = mismatches + 1L;
         b_out.push_back(bword);
         a_out.push_back(smith_waterman_mark_chars(bword, edit_mark));
         b_out.push_back(smith_waterman_mark_chars(aword, edit_mark));
@@ -246,13 +266,17 @@ Rcpp::List smith_waterman_path_integer(
   std::reverse(std::begin(b_out), std::end(b_out));
   
   Rcpp::List output = Rcpp::List::create(
+    Rcpp::Named("matches") = matches,
+    Rcpp::Named("mismatches") = mismatches,
     Rcpp::Named("a") = Rcpp::List::create(
       Rcpp::Named("sequence") = a_out, 
       Rcpp::Named("from") = which_start_a + 1,
-      Rcpp::Named("to") = which_end_a + 1),
-      Rcpp::Named("b") = Rcpp::List::create(
-        Rcpp::Named("sequence") = b_out, 
-        Rcpp::Named("from") = which_start_b + 1,
-        Rcpp::Named("to") = which_end_b + 1));
+      Rcpp::Named("to") = which_end_a + 1,
+      Rcpp::Named("gaps") = gaps_a),
+    Rcpp::Named("b") = Rcpp::List::create(
+      Rcpp::Named("sequence") = b_out, 
+      Rcpp::Named("from") = which_start_b + 1,
+      Rcpp::Named("to") = which_end_b + 1,
+      Rcpp::Named("gaps") = gaps_b));
   return output;
 }

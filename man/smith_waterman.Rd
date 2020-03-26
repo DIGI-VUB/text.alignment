@@ -42,6 +42,10 @@ an object of class smith_waterman which is a list with elements
 \itemize{
  \item{type: }{The alignment \code{type}}
  \item{sw: }{The Smith-Waterman local alignment score}
+ \item{similarity: }{Score between 0 and 1, calculated as the Smith-Waterman local alignment score / (the number of letters/words in the shortest text times the match weight)}
+ \item{weights: }{The list of weights provided to the function: match, mismatch and gap}
+ \item{matches: }{The number of matches found during alignment}
+ \item{mismatches: }{The number of mismatches found during alignment}
  \item{a: }{A list with alignment information from the text provided in \code{a}. The list elements documented below}
  \item{b: }{A list with alignment information from the text provided in \code{b}. The list elements documented below}
 }
@@ -55,6 +59,7 @@ Elements \code{a} and \code{b} are both lists which contain
    \item{text: }{The aligned text from either a or b where gaps/mismatches are filled up with the \code{edit_mark} symbol}
    \item{tokens: }{The character vector of tokens which form the aligned \code{text}}
    \item{n: }{The length of the aligned \code{text}}
+   \item{gaps: }{The number of gaps during alignment}
    \item{from: }{The starting position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.}
    \item{to: }{The end position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.}
   } 
