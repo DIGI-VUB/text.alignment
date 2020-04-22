@@ -1,7 +1,7 @@
 Package: text.alignment
 Type: Package
 Title: Text Alignment with Smith-Waterman
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jan.wijffels@vub.be', comment = "Rewrite of functionalities from the textreuse R package"), 
     person('Vrije Universiteit Brussel - DIGI: Brussels Platform for Digital Humanities', role = 'cph'),
@@ -14,7 +14,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Imports: Rcpp (>= 0.11.5)
 LinkingTo: Rcpp
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Suggests:
     knitr
 VignetteBuilder: knitr

@@ -80,6 +80,7 @@ tokenize_spaces_punct <- function(x){
 #'  \item{text: }{The provided character string of either a or b}
 #'  \item{tokens: }{A character vector of the tokenised texts of a or b}
 #'  \item{n: }{The length of \code{tokens}}
+#'  \item{similarity: }{The similarity to a calculated as the Smith-Waterman local alignment score / (the number of letters/words in the a or b text times the match weight)}
 #'  \item{alignment: }{A list with the following elements}
 #'    \itemize{
 #'    \item{text: }{The aligned text from either a or b where gaps/mismatches are filled up with the \code{edit_mark} symbol}
@@ -201,6 +202,7 @@ smith_waterman <- function(a, b,
                       a = list(text = a,
                                tokens = original_a,
                                n = length(standardised_a),
+                               similarity = 0,
                                alignment = list(text = character(),
                                                 tokens = character(),
                                                 n = 0L,
@@ -210,6 +212,7 @@ smith_waterman <- function(a, b,
                       b = list(text = b,
                                tokens = original_b,
                                n = length(standardised_b),
+                               similarity = 0,
                                alignment = list(text = character(),
                                                 tokens = character(),
                                                 n = 0L,
@@ -236,6 +239,11 @@ smith_waterman <- function(a, b,
                            row_i = row_i, col_i = col_i, max_match = max_match,
                            edit_mark = edit_mark)
   }
+  # fix issue for alignment of 1 letter only
+  if(length(path$b$sequence) == 1) 
+    path$b$from <- path$b$to 
+  if(length(path$a$sequence) == 1) 
+    path$a$from <- path$a$to
   
   # similarity: alignment score / score in case of perfect match (note does not work when user provides his own similarity function)
   similarity <- alignment_score / (min(length(standardised_a), length(standardised_b)) * match)
@@ -249,6 +257,7 @@ smith_waterman <- function(a, b,
                     a = list(text = a,
                              tokens = original_a,
                              n = length(standardised_a),
+                             similarity = alignment_score / (length(standardised_a) * match),
                              alignment = list(text = paste(path$a$sequence, collapse = collapse),
                                               tokens = path$a$sequence,
                                               n = length(path$a$sequence),
@@ -258,6 +267,7 @@ smith_waterman <- function(a, b,
                     b = list(text = b,
                              tokens = original_b,
                              n = length(standardised_b),
+                             similarity = alignment_score / (length(standardised_b) * match),
                              alignment = list(text = paste(path$b$sequence, collapse = collapse),
                                               tokens = path$b$sequence,
                                               n = length(path$b$sequence),
@@ -289,6 +299,8 @@ alignment_path <- function(m, original_a, original_b, row_i, col_i, max_match, e
   gaps_a <- 0L
   gaps_b <- 0L
   mismatches <- 0L
+  which_start_a <- 0;
+  which_start_b <- 0;
   
   # Begin moving up, left, or diagonally within the matrix till we hit a zero
   while (m[row_i - 1, col_i - 1] != 0) {
@@ -409,12 +421,14 @@ as.data.frame.smith_waterman <- function(x, ...){
              mismatches = x$mismatches,
              a_n = x$a$n,
              a_aligned = a_aligned, 
+             a_similarity = x$a$similarity,
              a_gaps = x$a$alignment$gaps,
              a_from = a_from,
              a_to = a_to,
              a_fromto = I(a_fromto),
              b_n = x$b$n,
              b_aligned = b_aligned, 
+             b_similarity = x$b$similarity,
              b_gaps = x$b$alignment$gaps,
              b_from = b_from,
              b_to = b_to, 

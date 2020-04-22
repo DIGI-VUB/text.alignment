@@ -16,7 +16,7 @@ a character vector with the sequence of characters in \code{x}
 Tokenise text into a sequence of characters
 }
 \examples{
-tokenize_letters("This function just chunks up text in letters\\nOK?")
+tokenize_letters("This function just chunks up text in letters\nOK?")
 tokenize_letters("Joske  Vermeulen")
 }
 \seealso{

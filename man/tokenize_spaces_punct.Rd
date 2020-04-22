@@ -17,7 +17,7 @@ Tokenise text into a sequence of words. The function uses \code{\link{strsplit}}
 by using the [:space:] and [:punct:] character classes.
 }
 \examples{
-tokenize_spaces_punct("This just splits. Text.alongside\\nspaces right?")
+tokenize_spaces_punct("This just splits. Text.alongside\nspaces right?")
 tokenize_spaces_punct("Also .. multiple punctuations or ??marks")
 tokenize_spaces_punct("Joske  Vermeulen")
 }

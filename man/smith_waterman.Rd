@@ -4,10 +4,20 @@
 \alias{smith_waterman}
 \title{Align text using Smith-Waterman}
 \usage{
-smith_waterman(a, b, type = c("characters", "words"), match = 2L,
-  mismatch = -1L, gap = -1L, lower = TRUE, similarity = function(x,
-  y) ifelse(x == y, 2L, -1L), tokenizer, collapse, edit_mark = "#",
-  implementation = c("R", "Rcpp"))
+smith_waterman(
+  a,
+  b,
+  type = c("characters", "words"),
+  match = 2L,
+  mismatch = -1L,
+  gap = -1L,
+  lower = TRUE,
+  similarity = function(x, y) ifelse(x == y, 2L, -1L),
+  tokenizer,
+  collapse,
+  edit_mark = "#",
+  implementation = c("R", "Rcpp")
+)
 }
 \arguments{
 \item{a}{a character string of length one}
@@ -54,6 +64,7 @@ Elements \code{a} and \code{b} are both lists which contain
  \item{text: }{The provided character string of either a or b}
  \item{tokens: }{A character vector of the tokenised texts of a or b}
  \item{n: }{The length of \code{tokens}}
+ \item{similarity: }{The similarity to a calculated as the Smith-Waterman local alignment score / (the number of letters/words in the a or b text times the match weight)}
  \item{alignment: }{A list with the following elements}
    \itemize{
    \item{text: }{The aligned text from either a or b where gaps/mismatches are filled up with the \code{edit_mark} symbol}
@@ -99,10 +110,10 @@ x$b$tokens[x$b$alignment$from:x$b$alignment$to]
 # examples on aligning text files
 a <- system.file(package = "text.alignment", "extdata", "example1.txt")
 a <- readLines(a)
-a <- paste(a, collapse = "\\n")
+a <- paste(a, collapse = "\n")
 b <- system.file(package = "text.alignment", "extdata", "example2.txt")
 b <- readLines(b)
-b <- paste(b, collapse = "\\n")
+b <- paste(b, collapse = "\n")
 smith_waterman(a, b, type = "characters")
 smith_waterman(a, b, type = "words")
 smith_waterman("Gistel Hof", b, type = "characters")
