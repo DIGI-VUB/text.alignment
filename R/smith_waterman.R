@@ -438,3 +438,76 @@ as.data.frame.smith_waterman <- function(x, ...){
 
 
 
+
+#' @title Perform multiple alignments using Smith-Waterman
+#' @description Utility function to perform all pairwise combinations of alignments between text.
+#' @param a a data.frame with columns doc_id and text. Or a character vector where the names of the character vector respresent a doc_id and the character vector corresponds to the text.
+#' @param b a data.frame with columns doc_id and text. Or a character vector where the names of the character vector respresent a doc_id and the character vector corresponds to the text.
+#' @param FUN a function to apply on an object of class \code{smith_waterman} which has done the pairwise alignment. 
+#' Defaults to \code{identity}. Other options are as.data.frame or your own function. See the examples.
+#' @param ... other arguments passed on to \code{\link{smith_waterman}}
+#' @return a list of pairwise Smith-Waterman comparisons after which the FUN argument is applied on all of these pairwise alignments.
+#' The output of the result of FUN is enriched by adding a list element 
+#' a_doc_id and b_doc_id which correspond to the doc_id's provided in \code{a} and \code{b} and which can be used
+#' in order to identify the match.
+#' @seealso \code{\link{smith_waterman}}
+#' @export
+#' @examples
+#' x <- data.frame(doc_id = c(1, 2),
+#'                 text = c("This is some text", "Another set of texts."),
+#'                 stringsAsFactors = FALSE)
+#' y <- data.frame(doc_id = c(1, 2, 3),
+#'                 text = c("were as some thing", "else, another set", NA_character_),
+#'                 stringsAsFactors = FALSE)
+#' alignments <- smith_waterman_pairwise(x, y)
+#' alignments
+#' alignments <- smith_waterman_pairwise(x, y, FUN = as.data.frame)
+#' do.call(rbind, alignments)
+#' alignments <- smith_waterman_pairwise(x, y, 
+#'                                       FUN = function(x) list(sim = x$similarity))
+#' do.call(rbind, alignments)
+#' 
+#' x <- c("1" = "This is some text", "2" = "Another set of texts.")
+#' y <- c("1" = "were as some thing", "2" = "else, another set", "3" = NA_character_)
+#' alignments <- smith_waterman_pairwise(x, y)
+smith_waterman_pairwise <- function(a, b, FUN = identity, ...){
+  as_tif <- function(x){
+    if(is.character(x) | is.factor(x)){
+      if(is.null(names(x))){
+        x <- data.frame(doc_id = seq_along(x), text = as.character(x), stringsAsFactors = FALSE)
+      }else{
+        x <- data.frame(doc_id = names(x), text = as.character(x), stringsAsFactors = FALSE)
+      }
+    }
+    x
+  }
+  set_names <- function(object, objectnames){
+    names(object) <- objectnames
+    object
+  }
+  
+  a <- as_tif(a)
+  b <- as_tif(b)
+  stopifnot(is.data.frame(a) & is.data.frame(b))
+  stopifnot(all(c("doc_id", "text") %in% colnames(a)))
+  stopifnot(all(c("doc_id", "text") %in% colnames(b)))
+  a <- a[, c("doc_id", "text"), drop = FALSE]
+  b <- b[, c("doc_id", "text"), drop = FALSE]
+  
+  combinations <- merge(a, b, by = character(), suffixes = c(".a", ".b"))
+  x <- mapply(a = set_names(combinations$text.a, combinations$doc_id.a), 
+              b = set_names(combinations$text.b, combinations$doc_id.b), 
+              FUN = function(a, b, ...){
+                alignment <- smith_waterman(a = a, b = b, ...)
+                alignment
+              }, ..., SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  x <- lapply(x, FUN = FUN)
+  x <- mapply(x, 
+              a = combinations$doc_id.a, b = combinations$doc_id.b, 
+              FUN = function(x, a, b, ...){
+                x$a_doc_id <- a
+                x$b_doc_id <- b
+                x
+              }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  x
+}
