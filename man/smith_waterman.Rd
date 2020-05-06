@@ -51,6 +51,7 @@ Defaults to \code{\link{tokenize_letters}} if type is \code{'characters'} and \c
 an object of class smith_waterman which is a list with elements
 \itemize{
  \item{type: }{The alignment \code{type}}
+ \item{edit_mark:}{The \code{edit_mark}}
  \item{sw: }{The Smith-Waterman local alignment score}
  \item{similarity: }{Score between 0 and 1, calculated as the Smith-Waterman local alignment score / (the number of letters/words in the shortest text times the match weight)}
  \item{weights: }{The list of weights provided to the function: match, mismatch and gap}
@@ -124,6 +125,7 @@ smith_waterman("Lange rei", b, type = "characters")
 x <- smith_waterman("Lange rei", b)
 x$b$tokens[x$b$alignment$from:x$b$alignment$to]
 as.data.frame(x)
+as.data.frame(x, alignment_id = "alignment-ab")
 
 x <- lapply(c("Lange rei", "Gistel Hof", NA, "Test"), FUN = function(a){
   x <- smith_waterman(a, b)

@@ -3,6 +3,7 @@
 S3method(as.data.frame,smith_waterman)
 S3method(print,smith_waterman)
 export(smith_waterman)
+export(smith_waterman_misaligned)
 export(smith_waterman_pairwise)
 export(tokenize_letters)
 export(tokenize_spaces_punct)
