@@ -1,6 +1,7 @@
 ### CHANGES IN text.alignment VERSION 0.1.2
 
 - Added smith_waterman_misaligned to extract the information of what is misaligned
+- Allow to pass arguments to the tokenizer
 
 ### CHANGES IN text.alignment VERSION 0.1.1
 

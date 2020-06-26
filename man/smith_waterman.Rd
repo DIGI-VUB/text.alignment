@@ -16,7 +16,8 @@ smith_waterman(
   tokenizer,
   collapse,
   edit_mark = "#",
-  implementation = c("R", "Rcpp")
+  implementation = c("R", "Rcpp"),
+  ...
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ Defaults to \code{\link{tokenize_letters}} if type is \code{'characters'} and \c
 \item{edit_mark}{separator to indicated a gap/mismatch between sequences. Defaults to the hashtag symbol.}
 
 \item{implementation}{either 'R' or 'Rcpp' indicating to perform the alignment in Rcpp or with plain R code. Defaults to 'R'.}
+
+\item{...}{extra arguments passed on to \code{tokenizer}}
 }
 \value{
 an object of class smith_waterman which is a list with elements

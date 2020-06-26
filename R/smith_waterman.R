@@ -62,6 +62,7 @@ tokenize_spaces_punct <- function(x){
 #' @param collapse separator used to combined characters / words back together in the output. Defaults to '' for type 'characters' and a space for type 'words'
 #' @param edit_mark separator to indicated a gap/mismatch between sequences. Defaults to the hashtag symbol.
 #' @param implementation either 'R' or 'Rcpp' indicating to perform the alignment in Rcpp or with plain R code. Defaults to 'R'.
+#' @param ... extra arguments passed on to \code{tokenizer}
 #' @seealso \url{https://en.wikipedia.org/wiki/Smith-Waterman_algorithm}
 #' @details The code uses similar code as the \code{textreuse::local_align} function and also allows to align character sequences next to aligning word sequences
 #' @return an object of class smith_waterman which is a list with elements
@@ -147,7 +148,8 @@ smith_waterman <- function(a, b,
                            tokenizer,
                            collapse,
                            edit_mark = "#", 
-                           implementation = c("R", "Rcpp")) {
+                           implementation = c("R", "Rcpp"), 
+                           ...) {
   rcpp <- match.arg(implementation) == "Rcpp"
   type <- match.arg(type)
   match    <- as.integer(match)
@@ -166,8 +168,8 @@ smith_waterman <- function(a, b,
   stopifnot(is.character(b) && length(b) == 1)
   
   # Tokenise into letters or words
-  original_a <- tokenizer(a)
-  original_b <- tokenizer(b)
+  original_a <- tokenizer(a, ...)
+  original_b <- tokenizer(b, ...)
   
   # Lowercasing to standardise
   if(lower){
