@@ -1,3 +1,7 @@
+### CHANGES IN text.alignment VERSION 0.1.2
+
+- Added smith_waterman_misaligned to extract the information of what is misaligned
+
 ### CHANGES IN text.alignment VERSION 0.1.1
 
 - Fix mismatch between R and Rcpp version of smith_waterman in case of an alignment with 1 letter/word only
