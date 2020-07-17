@@ -9,7 +9,7 @@ This repository contains an R package for aligning texts using the [Smith-Waterm
 ### Installation
 
 - For regular users, install the package from your local CRAN mirror `install.packages("text.alignment")`
-- For installing the development version of this package: `remotes::install_github("DIGIT-VUB/text.alignment", build_vignettes = TRUE)`
+- For installing the development version of this package: `remotes::install_github("DIGI-VUB/text.alignment", build_vignettes = TRUE)`
 
 Look to the vignette and the documentation of the functions
 
