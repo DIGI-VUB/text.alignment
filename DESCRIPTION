@@ -11,10 +11,12 @@ Description: Find similarities between texts using the Smith-Waterman algorithm.
     The Smith-Waterman algorithm is explained in the paper: "Identification of common molecular subsequences" by T.F.Smith and M.S.Waterman (1981), available at <doi:10.1016/0022-2836(81)90087-5>. 
     This package implements the same logic for sequences of words and letters instead of molecular sequences.
 License: MIT + file LICENSE
+URL: https://github.com/DIGI-VUB/text.alignment
 Encoding: UTF-8
 Imports: Rcpp (>= 0.11.5)
 LinkingTo: Rcpp
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests:
-    knitr
+    knitr,
+    markdown
 VignetteBuilder: knitr
