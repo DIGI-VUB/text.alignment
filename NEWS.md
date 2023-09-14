@@ -1,3 +1,7 @@
+### CHANGES IN text.alignment VERSION 0.1.4
+
+- Drop C++11 specification in Makevars
+
 ### CHANGES IN text.alignment VERSION 0.1.3
 
 - Change of maintainer email address

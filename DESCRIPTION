@@ -1,7 +1,7 @@
 Package: text.alignment
 Type: Package
 Title: Text Alignment with Smith-Waterman
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: c(
     person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jwijffels@bnosac.be', comment = "Rewrite of functionalities from the textreuse R package"), 
     person('Vrije Universiteit Brussel - DIGI: Brussels Platform for Digital Humanities', role = 'cph'),
