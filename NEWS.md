@@ -1,3 +1,7 @@
+### CHANGES IN text.alignment VERSION 0.1.5
+
+- Fix R CMD check notes on misaligned braces in documentation
+
 ### CHANGES IN text.alignment VERSION 0.1.4
 
 - Drop C++11 specification in Makevars

@@ -14,19 +14,19 @@ smith_waterman_misaligned(x, type = c("a", "b"))
 \value{
 a list of character vectors of misaligned elements
 \itemize{
-\item{before_alignment: }{Sections in a or b which were occurring before the alignment}
-\item{wrong_alignment: }{Sections in a or b which were mismatched in the alignment}
-\item{after_alignment: }{Sections in a or b which were occurring after the alignment}
-\item{combined: }{The combination of \code{before_alignment}, \code{wrong_alignment} and \code{after_alignment}}
-\item{partial: }{Logical, where TRUE indicates that there is at least a partial alignment and FALSE indicating no alignment between \code{a} and \code{b} was done (alignment score of 0)}
+\item before_alignment: Sections in a or b which were occurring before the alignment
+\item wrong_alignment: Sections in a or b which were mismatched in the alignment
+\item after_alignment: Sections in a or b which were occurring after the alignment
+\item combined: The combination of \code{before_alignment}, \code{wrong_alignment} and \code{after_alignment}
+\item partial: Logical, where TRUE indicates that there is at least a partial alignment and FALSE indicating no alignment between \code{a} and \code{b} was done (alignment score of 0)
 }
 }
 \description{
 Extract misaligned elements from the Smith-Waterman alignment, namely
 \itemize{
-\item{before_alignment: }{Sections in a or b which were occurring before the alignment}
-\item{wrong_alignment: }{Sections in a or b which were mismatched in the alignment}
-\item{after_alignment: }{Sections in a or b which were occurring after the alignment}
+\item before_alignment: Sections in a or b which were occurring before the alignment
+\item wrong_alignment: Sections in a or b which were mismatched in the alignment
+\item after_alignment: Sections in a or b which were occurring after the alignment
 }
 }
 \examples{

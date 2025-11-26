@@ -67,30 +67,30 @@ tokenize_spaces_punct <- function(x){
 #' @details The code uses similar code as the \code{textreuse::local_align} function and also allows to align character sequences next to aligning word sequences
 #' @return an object of class smith_waterman which is a list with elements
 #' \itemize{
-#'  \item{type: }{The alignment \code{type}}
-#'  \item{edit_mark:}{The \code{edit_mark}}
-#'  \item{sw: }{The Smith-Waterman local alignment score}
-#'  \item{similarity: }{Score between 0 and 1, calculated as the Smith-Waterman local alignment score / (the number of letters/words in the shortest text times the match weight)}
-#'  \item{weights: }{The list of weights provided to the function: match, mismatch and gap}
-#'  \item{matches: }{The number of matches found during alignment}
-#'  \item{mismatches: }{The number of mismatches found during alignment}
-#'  \item{a: }{A list with alignment information from the text provided in \code{a}. The list elements documented below}
-#'  \item{b: }{A list with alignment information from the text provided in \code{b}. The list elements documented below}
+#'  \item type: The alignment \code{type}
+#'  \item edit_mark: The \code{edit_mark}
+#'  \item sw: The Smith-Waterman local alignment score
+#'  \item similarity: Score between 0 and 1, calculated as the Smith-Waterman local alignment score / (the number of letters/words in the shortest text times the match weight)
+#'  \item weights: The list of weights provided to the function: match, mismatch and gap
+#'  \item matches: The number of matches found during alignment
+#'  \item mismatches: The number of mismatches found during alignment
+#'  \item a: A list with alignment information from the text provided in \code{a}. The list elements documented below
+#'  \item b: A list with alignment information from the text provided in \code{b}. The list elements documented below
 #' }
 #' Elements \code{a} and \code{b} are both lists which contain
 #' \itemize{
-#'  \item{text: }{The provided character string of either a or b}
-#'  \item{tokens: }{A character vector of the tokenised texts of a or b}
-#'  \item{n: }{The length of \code{tokens}}
-#'  \item{similarity: }{The similarity to a calculated as the Smith-Waterman local alignment score / (the number of letters/words in the a or b text times the match weight)}
-#'  \item{alignment: }{A list with the following elements}
+#'  \item text: The provided character string of either a or b
+#'  \item tokens: A character vector of the tokenised texts of a or b
+#'  \item n: The length of \code{tokens}
+#'  \item similarity: The similarity to a calculated as the Smith-Waterman local alignment score / (the number of letters/words in the a or b text times the match weight)
+#'  \item alignment: A list with the following elements
 #'    \itemize{
-#'    \item{text: }{The aligned text from either a or b where gaps/mismatches are filled up with the \code{edit_mark} symbol}
-#'    \item{tokens: }{The character vector of tokens which form the aligned \code{text}}
-#'    \item{n: }{The length of the aligned \code{text}}
-#'    \item{gaps: }{The number of gaps during alignment}
-#'    \item{from: }{The starting position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.}
-#'    \item{to: }{The end position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.}
+#'    \item text: The aligned text from either a or b where gaps/mismatches are filled up with the \code{edit_mark} symbol
+#'    \item tokens: The character vector of tokens which form the aligned \code{text}
+#'    \item n: The length of the aligned \code{text}
+#'    \item gaps: The number of gaps during alignment
+#'    \item from: The starting position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.
+#'    \item to: The end position in the full tokenised \code{tokens} element from either a or b where the aligned text is found. See the example.
 #'   } 
 #' } 
 #' @export
@@ -295,20 +295,20 @@ if(!exists("startsWith", envir = baseenv())){
 #' @title Extract misaligned elements 
 #' @description Extract misaligned elements from the Smith-Waterman alignment, namely
 #' \itemize{
-#' \item{before_alignment: }{Sections in a or b which were occurring before the alignment}
-#' \item{wrong_alignment: }{Sections in a or b which were mismatched in the alignment}
-#' \item{after_alignment: }{Sections in a or b which were occurring after the alignment}
+#' \item before_alignment: Sections in a or b which were occurring before the alignment
+#' \item wrong_alignment: Sections in a or b which were mismatched in the alignment
+#' \item after_alignment: Sections in a or b which were occurring after the alignment
 #' }
 #' @param x an object of class \code{smith_waterman} as returned by \code{\link{smith_waterman}}
 #' @param type either 'a' or 'b' indicating to return elements misaligned from \code{a} or from \code{b}
 #' @export
 #' @return a list of character vectors of misaligned elements
 #' \itemize{
-#' \item{before_alignment: }{Sections in a or b which were occurring before the alignment}
-#' \item{wrong_alignment: }{Sections in a or b which were mismatched in the alignment}
-#' \item{after_alignment: }{Sections in a or b which were occurring after the alignment}
-#' \item{combined: }{The combination of \code{before_alignment}, \code{wrong_alignment} and \code{after_alignment}}
-#' \item{partial: }{Logical, where TRUE indicates that there is at least a partial alignment and FALSE indicating no alignment between \code{a} and \code{b} was done (alignment score of 0)}
+#' \item before_alignment: Sections in a or b which were occurring before the alignment
+#' \item wrong_alignment: Sections in a or b which were mismatched in the alignment
+#' \item after_alignment: Sections in a or b which were occurring after the alignment
+#' \item combined: The combination of \code{before_alignment}, \code{wrong_alignment} and \code{after_alignment}
+#' \item partial: Logical, where TRUE indicates that there is at least a partial alignment and FALSE indicating no alignment between \code{a} and \code{b} was done (alignment score of 0)
 #' }
 #' @examples
 #' sw <- smith_waterman("ab test xy", "cd tesst ab", type = "characters")
